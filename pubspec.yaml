@@ -9,7 +9,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  convert: 2.1.1
+  # convert: 2.1.1
   async: ^2.2.0
   protobuf: ^2.0.0
   crypto: ^3.0.0
