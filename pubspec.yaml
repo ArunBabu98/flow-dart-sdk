@@ -21,7 +21,7 @@ dependencies:
 
   # Crypto
   pointycastle: ^3.0.1
-  rlp: ^1.0.1
+  rlp: ^2.0.0
   cryptography: ^2.0.1
 
   flutter:

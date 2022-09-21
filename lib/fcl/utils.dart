@@ -1,4 +1,5 @@
 import 'package:rlp/rlp.dart';
+import 'package:rlp/src/address.dart';
 import 'package:convert/convert.dart';
 import 'package:flow_dart_sdk/fcl/constants.dart';
 
