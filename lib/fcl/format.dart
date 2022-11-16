@@ -20,7 +20,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flow_dart_sdk/fcl/constants.dart';
 
 String _fixedPointToString(Int64 amount, num decimalPlaces) {
-  final amountString = amount.toRadixStringUnsigned(UFIX64_DECIMAL_PLACES);
+  final amountString = amount.toRadixStringUnsigned(10);
   final length = amountString.length;
 
   if (length < decimalPlaces) {
