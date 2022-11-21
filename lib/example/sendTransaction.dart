@@ -1,22 +1,22 @@
 
-import 'dart:convert';
+// import 'dart:convert';
 
-import 'package:flow_dart_sdk/fcl/constants.dart';
-import 'package:flow_dart_sdk/fcl/fcl.dart';
+// import 'package:flow_dart_sdk/fcl/constants.dart';
+// import 'package:flow_dart_sdk/fcl/fcl.dart';
 
-void main() async{
-  final flow = FlowClient(LOCALHOST, EMULATOR_PORT);
+// void main() async{
+//   final flow = FlowClient(LOCALHOST, EMULATOR_PORT);
 
-  final code = '''
-    transaction{
-      prepare(signer: AuthAccount){
-        log("Done!");
-      }
-    }
-  ''';
+//   final code = '''
+//     transaction{
+//       prepare(signer: AuthAccount){
+//         log("Done!");
+//       }
+//     }
+//   ''';
 
-  final response = await flow.sendTransaction(code);
-  print(response);
+//   final response = await flow.sendTransaction(code);
+//   print(response);
 
-  print("✅ Done");
-}
+//   print("✅ Done");
+// }

@@ -125,8 +125,10 @@ class FlowClient {
     return client.executeScriptAtBlockHeight(request);
   }
 
-  /// Submits transaction to network.
-  Future<SendTransactionResponse> sendTransaction(String code,
+  /// sendTransaction
+
+  Future<SendTransactionResponse> sendTransaction(
+      String code, String pubKey, String prvKey,
       {List<CadenceValue> arguments, Int64 gasLimit}) async {
     final client = this.getAccessClient();
 
@@ -141,8 +143,8 @@ class FlowClient {
 
     final latestBlock = await this.getBlock();
 
-    final privateKey = SERVICE_ACCOUNT_PRIVATE_KEY;
-    final payerAddress = SERVICE_ACCOUNT;
+    final privateKey = prvKey;
+    final payerAddress = pubKey;
     final payer = hex.decode(payerAddress);
 
     final accountResponse = await this.getAccount(payerAddress);
@@ -165,7 +167,7 @@ class FlowClient {
 
     transaction.arguments.insertAll(0, args);
     transaction.authorizers.insertAll(0, [payer]);
-    
+
     // Signing
     final payload = transactionPayload(transaction);
     final rlpPayload = Rlp.encode(payload);
@@ -173,13 +175,16 @@ class FlowClient {
 
     // Sign payload
     // Proposer
-    signPayload(transaction, rlpPayload, transaction.proposalKey.address, privateKey, keyId, payloadSignatures);
+    signPayload(transaction, rlpPayload, transaction.proposalKey.address,
+        privateKey, keyId, payloadSignatures);
     // Payer
-    signPayload(transaction, rlpPayload, payer, privateKey, keyId, payloadSignatures);
+    signPayload(
+        transaction, rlpPayload, payer, privateKey, keyId, payloadSignatures);
 
     // Authorizers
     transaction.authorizers.forEach((authorizer) {
-      signPayload(transaction, rlpPayload, authorizer, privateKey, keyId, payloadSignatures);
+      signPayload(transaction, rlpPayload, authorizer, privateKey, keyId,
+          payloadSignatures);
     });
 
     // Lastly Payer signs envelope
@@ -197,6 +202,82 @@ class FlowClient {
 
     return client.sendTransaction(request);
   }
+
+  /// Submits transaction to network.
+  // Future<SendTransactionResponse> sendTransaction(String code,
+  //     {List<CadenceValue> arguments, Int64 gasLimit}) async {
+  //   final client = this.getAccessClient();
+
+  //   // Convert arguments to required format
+  //   final args = prepareArguments(arguments);
+
+  //   var fixedGasLimit = gasLimit;
+
+  //   if (fixedGasLimit == null) {
+  //     fixedGasLimit = Int64(100);
+  //   }
+
+  //   final latestBlock = await this.getBlock();
+
+  //   final privateKey = SERVICE_ACCOUNT_PRIVATE_KEY;
+  //   final payerAddress = SERVICE_ACCOUNT;
+  //   final payer = hex.decode(payerAddress);
+
+  //   final accountResponse = await this.getAccount(payerAddress);
+  //   final account = accountResponse.account;
+  //   final keyId = 0;
+  //   final sequenceNumber = account.keys[keyId].sequenceNumber;
+
+  //   final proposalKey = Transaction_ProposalKey()
+  //     ..address = payer
+  //     ..sequenceNumber = Int64(sequenceNumber)
+  //     ..keyId = keyId;
+
+  //   // Prepare Transaction
+  //   final transaction = Transaction()
+  //     ..payer = payer
+  //     ..script = utf8.encode(code)
+  //     ..referenceBlockId = latestBlock.block.id
+  //     ..proposalKey = proposalKey
+  //     ..gasLimit = fixedGasLimit;
+
+  //   transaction.arguments.insertAll(0, args);
+  //   transaction.authorizers.insertAll(0, [payer]);
+
+  //   // Signing
+  //   final payload = transactionPayload(transaction);
+  //   final rlpPayload = Rlp.encode(payload);
+  //   var payloadSignatures = [];
+
+  //   // Sign payload
+  //   // Proposer
+  //   signPayload(transaction, rlpPayload, transaction.proposalKey.address,
+  //       privateKey, keyId, payloadSignatures);
+  //   // Payer
+  //   signPayload(
+  //       transaction, rlpPayload, payer, privateKey, keyId, payloadSignatures);
+
+  //   // Authorizers
+  //   transaction.authorizers.forEach((authorizer) {
+  //     signPayload(transaction, rlpPayload, authorizer, privateKey, keyId,
+  //         payloadSignatures);
+  //   });
+
+  //   // Lastly Payer signs envelope
+  //   final envelope = foldEnvelope(payload, transaction);
+
+  //   final envelopeSignature = Transaction_Signature()
+  //     ..address = payer
+  //     ..keyId = keyId
+  //     ..signature = signData(envelope, privateKey, DOMAIN_TAG);
+
+  //   final envelopeSignatures = [envelopeSignature];
+  //   transaction.envelopeSignatures.insertAll(0, envelopeSignatures);
+
+  //   final request = SendTransactionRequest()..transaction = transaction;
+
+  //   return client.sendTransaction(request);
+  // }
 
   /// Gets events of [eventName] type emitted in range from [rangeStart] to [rangeEnd].
   Future<EventsResponse> getEventsInRange(String eventName,
