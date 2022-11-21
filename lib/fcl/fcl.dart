@@ -170,6 +170,8 @@ class FlowClient {
 
     // Signing
     final payload = transactionPayload(transaction);
+    print(transaction);
+    print(payload);
     final rlpPayload = Rlp.encode(payload);
     var payloadSignatures = [];
 
